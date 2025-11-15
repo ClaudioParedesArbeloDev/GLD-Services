@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Momo+Trust+Display&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-one: "Montserrat", sans-serif;
+    --font-two: "Momo Trust Display", sans-serif;
+
+    --color-background-color: #f8f9fb;
+    --color-background-main: #eef1f5;
+    --color-primary-color: #2b6cb0;
+    --color-secondary-color: #a0c4ff;
+    --color-text-color: #1a2a44;
+    --color-text-muted: #64748b;
+  }
+
+  .dark {
+    --color-background-color: #0f172a;
+    --color-background-main: #1e293b;
+    --color-primary-color: #3b82f6;
+    --color-secondary-color: #60a5fa;
+    --color-text-color: #e2e8f0;
+    --color-text-muted: #94a3b8;
+  }
+}
+
+@layer components {
+  .bg-main { @apply bg-[var(--color-background-main)]; }
+  .bg-body { @apply bg-[var(--color-background-color)]; }
+  .text-primary { @apply text-[var(--color-primary-color)]; }
+  .text-secondary { @apply text-[var(--color-secondary-color)]; }
+  .text-main { @apply text-[var(--color-text-color)]; }
+  .text-muted { @apply text-[var(--color-text-muted)]; }
+}
+
+#root {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  font-family: var(--font-one);
+}
