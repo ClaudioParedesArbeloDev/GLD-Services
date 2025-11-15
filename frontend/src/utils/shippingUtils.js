@@ -7,9 +7,10 @@ import SHIPPING_CONFIG from '../config/shippingConfig';
  */
 export const calculateTotalWeight = (cart) => {
   return cart.reduce((total, item) => {
-    // Usa el peso del producto o estima 0.5kg por defecto
-    const itemWeight = parseFloat(item.weight) || parseFloat(item.peso) || 0.5;
-    return total + (itemWeight * item.quantity);
+    // Tu DB tiene el peso en GRAMOS → campo "peso"
+    const pesoEnGramos = parseFloat(item.peso) || parseFloat(item.weight) || 500; // default 500g
+    const pesoEnKg = pesoEnGramos / 1000; // ← CONVERTIMOS A KG porque el resto del código espera KG
+    return total + (pesoEnKg * item.quantity);
   }, 0);
 };
 

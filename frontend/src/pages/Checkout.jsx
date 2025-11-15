@@ -3,6 +3,12 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import api from "../api/url";
 
+import { initMercadoPago } from '@mercadopago/sdk-react'
+
+
+initMercadoPago('APP_USR-7ab12204-7451-46e3-81a3-18889c426dbd');  
+
+
 export default function Checkout() {
   const { cart, getSubtotal, clearCart } = useCart();
   const navigate = useNavigate();
