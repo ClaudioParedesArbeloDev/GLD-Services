@@ -3,11 +3,11 @@ import ReactDOM from "react-dom/client";
 import { Auth0Provider } from "@auth0/auth0-react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./context/CartContext";
-import Checkout from "./pages/Checkout";
 
+
+import Checkout from "./pages/Checkout";
 import Home from "./pages/Home";
 import Navbar from "./components/navbar";
-import Footer from "./components/footer";
 import ProductDetail from "./pages/ProductDetail";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import CategoriesAdmin from "./pages/admin/CategoriesAdmin";
@@ -37,7 +37,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <Route path="/admin/products" element={<ProtectedRoute><ProductsAdmin /></ProtectedRoute>} />
             <Route path="/checkout" element={<Checkout />} />
           </Routes>
-          <Footer />
         </CartProvider>
       </BrowserRouter>
     </Auth0Provider>

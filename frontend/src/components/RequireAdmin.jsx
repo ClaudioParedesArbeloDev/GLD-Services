@@ -12,7 +12,7 @@ export default function RequireAdmin({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100">
         <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-emerald-600"></div>
       </div>
     );
@@ -20,7 +20,7 @@ export default function RequireAdmin({ children }) {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-pink-100">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-rose-50 to-pink-100">
         <div className="text-center p-20 bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl border border-rose-200">
           <i className="fa-solid fa-lock text-9xl text-rose-500 mb-8"></i>
           <h1 className="text-6xl font-extralight text-rose-600 mb-4">ACCESO RESTRINGIDO</h1>

@@ -1,4 +1,5 @@
 import express from "express";
+import { protectAdmin } from "../middleware/auth.js";
 
 import {
   getAllProducts,
@@ -20,9 +21,11 @@ router.get("/search", searchProducts);
 router.get("/filter", getFilteredProducts);
 router.get("/:id", getProductById);
 router.get("/category/:categoryId", getProductsByCategory);
-router.post("/", createProduct);
-router.put("/:id", updateProduct);
-router.patch("/:id/stock", updateProductStock);
-router.delete("/:id", deleteProduct);
+
+
+router.post("/", protectAdmin, createProduct);
+router.put("/:id", protectAdmin, updateProduct);
+router.patch("/:id/stock", protectAdmin, updateProductStock);
+router.delete("/:id", protectAdmin, deleteProduct);
 
 export default router;

@@ -15,10 +15,10 @@ export default function AddToCartButton({ product, className = "", showQuantity 
     addToCart(product, quantity);
     setAdded(true);
     
-    // Mostrar feedback visual
+    
     setTimeout(() => setAdded(false), 2000);
     
-    // Opcionalmente abrir el carrito
+    
     setTimeout(() => openCart(), 300);
   };
 
@@ -34,7 +34,7 @@ export default function AddToCartButton({ product, className = "", showQuantity 
     }
   };
 
-  // Si no hay stock
+  
   if (product.stock === 0) {
     return (
       <button
@@ -42,14 +42,13 @@ export default function AddToCartButton({ product, className = "", showQuantity 
         className={`bg-gray-400 text-white cursor-not-allowed ${className}`}
       >
         <i className="fa-solid fa-times mr-2"></i>
-        Sin Stock
+        Proximamente
       </button>
     );
   }
 
   return (
     <div className="space-y-3">
-      {/* Selector de cantidad */}
       {showQuantity && (
         <div className="flex items-center gap-3">
           <span className="text-sm font-semibold text-gray-700">Cantidad:</span>
@@ -77,7 +76,7 @@ export default function AddToCartButton({ product, className = "", showQuantity 
         </div>
       )}
 
-      {/* Botón agregar al carrito */}
+      
       <button
         type="button"
         onClick={handleAddToCart}
@@ -85,7 +84,7 @@ export default function AddToCartButton({ product, className = "", showQuantity 
         className={`relative overflow-hidden transition-all duration-300 ${
           added
             ? "bg-green-600 hover:bg-green-700"
-            : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            : "bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
         } ${className}`}
       >
         {added ? (

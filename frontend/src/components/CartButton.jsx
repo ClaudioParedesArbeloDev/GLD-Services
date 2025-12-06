@@ -7,7 +7,7 @@ export default function CartButton() {
   return (
     <button
       onClick={openCart}
-      className="relative p-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110"
+      className="relative p-3  text-black hover:text-emerald-500 transition-all duration-300 transform hover:scale-110"
       aria-label="Abrir carrito"
     >
       <i className="fa-solid fa-shopping-cart text-xl"></i>

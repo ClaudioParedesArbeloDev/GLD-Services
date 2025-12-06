@@ -55,7 +55,7 @@ export default function CategoriesAdmin() {
   return (
     <div className="min-h-screen bg-body py-16">
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-light text-primary mb-12 text-center font-[var(--font-two)]">
+        <h2 className="text-4xl font-light text-primary mb-12 text-center">
           <i className="fa-solid fa-tags mr-3 text-secondary"></i>
           Administrar Categorías
         </h2>

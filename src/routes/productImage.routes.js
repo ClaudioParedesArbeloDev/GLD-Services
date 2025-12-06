@@ -1,4 +1,5 @@
 import express from "express";
+import { protectAdmin } from "../middleware/auth.js";
 
 import {
   getImagesByProduct,
@@ -18,17 +19,15 @@ const router = express.Router();
 
 router.get("/", getAllImages);
 router.get("/:id", getImageById);
-router.post("/", createImage);
-router.put("/:id", updateImage);
-router.delete("/:id", deleteImage);
-
-
-router.patch("/:id/set-main", setMainImage);
-
-
 router.get("/product/:productId", getImagesByProduct);
 router.get("/product/:productId/main", getMainImage);
-router.post("/product/:productId/multiple", createMultipleImages);
-router.delete("/product/:productId", deleteImagesByProduct);
+
+
+router.post("/", protectAdmin, createImage);
+router.put("/:id", protectAdmin, updateImage);
+router.delete("/:id", protectAdmin, deleteImage);
+router.patch("/:id/set-main", protectAdmin, setMainImage);
+router.post("/product/:productId/multiple", protectAdmin, createMultipleImages);
+router.delete("/product/:productId", protectAdmin, deleteImagesByProduct);
 
 export default router;

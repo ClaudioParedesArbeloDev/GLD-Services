@@ -9,7 +9,7 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Estados para el producto destacado
+ 
   const [featuredProduct, setFeaturedProduct] = useState(null);
   const [featuredImages, setFeaturedImages] = useState([]);
   const [featuredVideos, setFeaturedVideos] = useState([]);
@@ -17,12 +17,12 @@ export default function Home() {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [selectedMediaType, setSelectedMediaType] = useState("image");
 
-  // Estados para filtros
+ 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortOrder, setSortOrder] = useState("");
 
-  // Cargar datos iniciales
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -44,7 +44,7 @@ export default function Home() {
         setFiltered(prods);
         setCategories(cats);
 
-        // Establecer primer producto como destacado
+        
         if (prods.length > 0) {
           loadFeaturedProduct(prods[0]);
         }
@@ -57,7 +57,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  // Cargar detalles del producto destacado
+  
   const loadFeaturedProduct = async (product) => {
     try {
       const [imgsRes, vidsRes] = await Promise.all([
@@ -75,7 +75,7 @@ export default function Home() {
       setFeaturedVideos(videos);
       
 
-      // Establecer media inicial (prioridad: imagen principal > primera imagen > primer video)
+     
       const mainImg = images.find((img) => img.is_main);
       if (mainImg) {
         setSelectedMedia(mainImg.url);
@@ -92,7 +92,7 @@ export default function Home() {
     }
   };
 
-  // Rotar producto destacado cada 10 segundos
+  
   useEffect(() => {
     if (products.length === 0) return;
 
@@ -104,11 +104,11 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [products]);
 
-  // Aplicar filtros
+  
   useEffect(() => {
     let result = [...products];
 
-    // Filtro de búsqueda
+    
     if (searchQuery) {
       result = result.filter(
         (p) =>
@@ -117,12 +117,12 @@ export default function Home() {
       );
     }
 
-    // Filtro de categoría
+    
     if (selectedCategory) {
       result = result.filter((p) => p.category_id === Number(selectedCategory));
     }
 
-    // Ordenamiento por precio
+    
     if (sortOrder === "asc") {
       result.sort((a, b) => a.final_price - b.final_price);
     } else if (sortOrder === "desc") {
@@ -132,19 +132,19 @@ export default function Home() {
     setFiltered(result);
   }, [searchQuery, selectedCategory, sortOrder, products]);
 
-  // Función para obtener el ID de video de YouTube
+ 
   const getYoutubeId = (url) => {
     if (!url) return null;
     const match = url.match(/(?:youtube\.com\/.*[?&]v=|youtu\.be\/|youtube\.com\/embed\/)([^&?/]+)/);
     return match ? match[1] : null;
   };
 
-  // Función para determinar si es video de YouTube
+  
   const isYoutubeVideo = (url) => {
     return url && (url.includes("youtube.com") || url.includes("youtu.be"));
   };
 
-  // Función para obtener thumbnail de YouTube
+ 
   const getYoutubeThumbnail = (url) => {
     const videoId = getYoutubeId(url);
     return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;
@@ -152,7 +152,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-gray-100">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-r from-slate-50 via-blue-50 to-gray-100">
         <div className="text-center">
           <div className="relative">
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-gray-200 mx-auto"></div>
@@ -165,12 +165,12 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-100">
-      {/* SECCIÓN DE FILTROS - Diseño moderno con glassmorphism */}
-      <section className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 sticky top-0 z-40">
+    <div className="min-h-screen bg-linear-to-r from-blue-50 via-indigo-50 to-slate-100">
+     
+      <section className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200/50 md:sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Buscador */}
+            
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <i className="fa-solid fa-search text-blue-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -184,7 +184,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Filtro por Categoría */}
+            
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <i className="fa-solid fa-tag text-blue-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -206,7 +206,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Ordenar por Precio */}
+            
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <i className="fa-solid fa-arrow-down-wide-short text-blue-400 group-focus-within:text-blue-600 transition-colors"></i>
@@ -228,27 +228,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PRODUCTO DESTACADO - Versión más compacta */}
+      
       {featuredProduct ? (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        <section className="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
           <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-blue-100/50">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-              {/* COLUMNA IZQUIERDA: MULTIMEDIA */}
-              <div className="bg-gradient-to-br from-blue-50/50 via-indigo-50/30 to-slate-50/40 p-4 md:p-6 space-y-3">
-                {/* Título del producto (arriba en móvil) */}
+             
+              <div className="bg-linear-to-r from-blue-50/50 via-indigo-50/30 to-slate-50/40 p-4 md:p-6 space-y-3">
+                
                 <div className="lg:hidden mb-3">
-                  <h1 className="text-xl font-bold text-gray-800 mb-2">
+                  <h1 className="md:text-xl font-bold text-gray-800 mb-2">
                     {featuredProduct.title}
                   </h1>
                   {featuredProduct.discount > 0 && (
-                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                    <span className="inline-flex items-center gap-1 bg-linear-to-r from-red-500 to-red-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-lg">
                       <i className="fa-solid fa-fire"></i>
                       -{featuredProduct.discount}% OFF
                     </span>
                   )}
                 </div>
 
-                {/* Media principal (imagen o video) - más compacto */}
+               
                 <div className="bg-white rounded-xl overflow-hidden shadow-lg border-2 border-white">
                   <div className="aspect-square relative">
                     {selectedMediaType === "video" ? (
@@ -282,9 +282,9 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Thumbnails (miniaturas) */}
+               
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-blue-400 scrollbar-track-gray-200">
-                  {/* Thumbnails de imágenes */}
+                  
                   {featuredImages.map((img) => (
                     <button
                       key={`img-${img.id}`}
@@ -292,7 +292,7 @@ export default function Home() {
                         setSelectedMedia(img.url);
                         setSelectedMediaType("image");
                       }}
-                      className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 transform hover:scale-105 ${
+                      className={`relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 transform hover:scale-105 ${
                         selectedMedia === img.url && selectedMediaType === "image"
                           ? "border-blue-600 ring-2 ring-blue-200 shadow-md"
                           : "border-gray-300 hover:border-blue-400 shadow-sm"
@@ -314,7 +314,7 @@ export default function Home() {
                     </button>
                   ))}
 
-                  {/* Thumbnails de videos */}
+                  
                   {featuredVideos.map((vid) => (
                     <button
                       key={`vid-${vid.id}`}
@@ -322,7 +322,7 @@ export default function Home() {
                         setSelectedMedia(vid.url);
                         setSelectedMediaType("video");
                       }}
-                      className={`relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 transform hover:scale-105 ${
+                      className={`relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 transform hover:scale-105 ${
                         selectedMedia === vid.url && selectedMediaType === "video"
                           ? "border-blue-600 ring-2 ring-blue-200 shadow-md"
                           : "border-gray-300 hover:border-blue-400 shadow-sm"
@@ -342,7 +342,7 @@ export default function Home() {
                           </div>
                         </div>
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                        <div className="w-full h-full bg-linear-to-r from-gray-800 to-gray-900 flex items-center justify-center">
                           <div className="bg-blue-600 rounded-full w-10 h-10 flex items-center justify-center shadow-lg">
                             <i className="fa-solid fa-play text-white text-sm ml-0.5"></i>
                           </div>
@@ -353,30 +353,30 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* COLUMNA DERECHA: INFORMACIÓN */}
+              
               <div className="flex flex-col p-4 md:p-6">
-                {/* Título (solo en desktop) */}
+                
                 <div className="hidden lg:block mb-4">
                   <h1 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">
                     {featuredProduct.title}
                   </h1>
                   {featuredProduct.discount > 0 && (
-                    <span className="inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md">
+                    <span className="inline-flex items-center gap-2 bg-linear-to-r from-red-500 to-red-600 text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-md">
                       <i className="fa-solid fa-fire"></i>
                       OFERTA: -{featuredProduct.discount}% OFF
                     </span>
                   )}
                 </div>
 
-                {/* Descripción */}
+                
                 <div className="mb-4">
-                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Descripción</h3>
-                  <p className="text-gray-700 leading-relaxed text-sm">
+                  <h3 className="hidden md:block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Descripción</h3>
+                  <p className="hidden md:block text-gray-700 leading-relaxed text-sm">
                     {featuredProduct.description || "Este producto no tiene descripción disponible."}
                   </p>
                 </div>
 
-                {/* Precio */}
+                
                 <div className="mb-4 pb-4 border-b border-gray-200">
                   <div className="flex items-end gap-2">
                     <p className="text-3xl font-bold text-blue-600">
@@ -394,16 +394,16 @@ export default function Home() {
                   </p>
                 </div>
 
-                {/* Botón */}
+                
                 <Link
                   to={`/product/${featuredProduct.id}`}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-xl font-bold text-base text-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 mb-4"
+                  className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-xl font-bold text-base text-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center gap-2 mb-4"
                 >
                   <span>Ver Producto Completo</span>
                   <i className="fa-solid fa-arrow-right"></i>
                 </Link>
 
-                {/* Especificaciones */}
+               
                 {featuredSpecs.length > 0 && (
                   <div className="flex-1">
                     <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
@@ -414,7 +414,7 @@ export default function Home() {
                       {featuredSpecs.map((spec) => (
                         <div
                           key={spec.id}
-                          className="flex justify-between items-center py-2 px-3 bg-gradient-to-r from-blue-50/40 via-indigo-50/30 to-slate-50/30 rounded-lg hover:from-blue-50 hover:to-indigo-50/50 transition-all duration-200 border border-blue-100/50"
+                          className="flex justify-between items-center py-2 px-3 bg-linear-to-r from-blue-50/40 via-indigo-50/30 to-slate-50/30 rounded-lg hover:from-blue-50 hover:to-indigo-50/50 transition-all duration-200 border border-blue-100/50"
                         >
                           <span className="text-gray-600 font-semibold text-xs">{spec.spec_key}</span>
                           <span className="text-gray-900 font-bold text-xs">{spec.spec_value}</span>
@@ -430,7 +430,7 @@ export default function Home() {
       ) : (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl p-16 border border-gray-200/50">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full mb-6">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-linear-to-r from-blue-100 to-blue-200 rounded-full mb-6">
               <i className="fa-solid fa-box-open text-5xl text-blue-600"></i>
             </div>
             <h2 className="text-3xl font-bold text-gray-800 mb-4">
@@ -441,7 +441,7 @@ export default function Home() {
             </p>
             <Link
               to="/admin"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <i className="fa-solid fa-crown"></i>
               Ir al Panel Admin
@@ -450,12 +450,12 @@ export default function Home() {
         </section>
       )}
 
-      {/* LISTA DE TODOS LOS PRODUCTOS - Con fondo gris más fuerte */}
-      <section className="bg-gradient-to-br from-gray-100 via-slate-200 to-gray-300 py-12">
+  
+      <section className="bg-linear-to-r from-gray-100 via-slate-200 to-gray-300 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
-              <div className="w-1 h-8 bg-gradient-to-b from-gray-600 to-gray-800 rounded-full"></div>
+            <h2 className="md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+              <div className="w-1 h-8 bg-linear-to-r from-gray-600 to-gray-800 rounded-full"></div>
               Todos los Productos
             </h2>
             <span className="text-gray-700 font-semibold bg-white/90 px-4 py-2 rounded-full shadow-md border border-gray-300">
@@ -467,7 +467,7 @@ export default function Home() {
           <ProductList products={filtered} />
         ) : (
           <div className="text-center py-20 bg-white/90 backdrop-blur-sm rounded-3xl shadow-xl border border-gray-200/50">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full mb-6">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-linear-to-r from-gray-100 to-gray-200 rounded-full mb-6">
               <i className="fa-solid fa-search text-4xl text-gray-400"></i>
             </div>
             <p className="text-xl text-gray-700 font-semibold mb-2">
@@ -482,7 +482,7 @@ export default function Home() {
                 setSelectedCategory("");
                 setSortOrder("");
               }}
-              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+              className="px-8 py-3 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-semibold shadow-lg transition-all duration-300 transform hover:-translate-y-1"
             >
               <i className="fa-solid fa-rotate-right mr-2"></i>
               Limpiar filtros

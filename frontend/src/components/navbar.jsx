@@ -1,9 +1,10 @@
 import { useAuth0 } from "@auth0/auth0-react";
+import { Link } from "react-router-dom";
+
 import LoginButton from "./LoginButton";
 import LogoutButton from "./Logout";
-import { Link } from "react-router-dom";
 import CartButton from "./CartButton";
-import Cart from "./Cart"; // ¡IMPORTANTE! Importar el componente Cart
+import Cart from "./Cart"; 
 
 function Navbar() {
   const { isAuthenticated, isLoading, user } = useAuth0();
@@ -11,26 +12,24 @@ function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-background-color/80 backdrop-blur-md shadow-lg border-b border-white/10">
+      <header className="sticky top-0 z-50 bg-linear-to-t from-sky-500 to-indigo-500 backdrop-blur-md shadow-lg border-b border-white/10 md:py-4">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-4 py-3 sm:px-6 lg:px-8">
-          
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 hover:scale-105 transition-transform">
             <img
               src="/logo-light.png"
               alt="GLD Importaciones"
-              className="w-12 sm:w-16 md:w-20 lg:w-24"
+              className="w-16 md:w-20 lg:w-24"
             />
-            <div className="hidden sm:block text-text-color">
-              <p className="text-xs sm:text-sm tracking-widest font-light">DIVISIÓN</p>
-              <p className="text-lg sm:text-xl font-bold tracking-wider">IMPORTACIONES</p>
+            <div className="hidden md:block text-text-color">
+              <p className="text-xs md:text-sm tracking-widest font-light">DIVISIÓN</p>
+              <p className="text-lg md:text-xl font-bold tracking-wider">IMPORTACIONES</p>
             </div>
           </Link>
 
-          {/* User / Auth / Carrito */}
+          
           <div className="flex items-center gap-3 sm:gap-5">
             
-            {/* Botón del Carrito */}
+            
             <CartButton />
             
             {isLoading ? (
@@ -52,7 +51,7 @@ function Navbar() {
                   {isAdmin && (
                     <Link
                       to="/admin"
-                      className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white px-4 py-2 rounded-full font-bold shadow-md transition"
+                      className="hidden sm:flex items-center gap-2 bg-linear-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white px-4 py-2 rounded-full font-bold shadow-md transition"
                     >
                       <i className="fa-solid fa-crown"></i>
                       Admin
@@ -67,8 +66,6 @@ function Navbar() {
           </div>
         </div>
       </header>
-
-      {/* ¡IMPORTANTE! Renderizar el componente Cart aquí */}
       <Cart />
     </>
   );

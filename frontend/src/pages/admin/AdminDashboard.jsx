@@ -4,7 +4,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-body py-16">
       <div className="max-w-7xl mx-auto px-6">
-        <h1 className="text-4xl font-light text-primary mb-12 text-center flex items-center justify-center gap-4 font-[var(--font-two)]">
+        <h1 className="text-4xl font-(--font-two) text-primary mb-12 text-center flex items-center justify-center gap-4 ">
           <i className="fa-solid fa-crown text-secondary"></i>
           Panel Administrador
         </h1>

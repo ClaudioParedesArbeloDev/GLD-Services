@@ -1,146 +1,151 @@
-// shippingController.js - Backend Controller para cálculo de envíos
-// Coloca este archivo en tu carpeta de controllers
+import zipNovaService, { ZIPNOVA_CONFIG } from '../services/Zipnovaservice.js';
 
-import { calculateShippingCost, calculateFreeShippingProgress } from '../utils/shippingUtils.js';
 
-/**
- * POST /api/shipping/calculate
- * Calcula el costo de envío basado en los items y destino
- */
 export const calculateShipping = async (req, res) => {
   try {
     const { items, destinationZipCode, destinationCity, destinationState } = req.body;
 
-    // Validaciones
+   
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({
         success: false,
-        error: "Se requiere un carrito con productos"
+        error: 'Se requiere un carrito con productos'
       });
     }
 
     if (!destinationZipCode) {
       return res.status(400).json({
         success: false,
-        error: "Se requiere el código postal de destino"
+        error: 'Se requiere el código postal de destino'
       });
     }
 
-    // Calcular subtotal
+ 
+    if (!zipNovaService.validateZipCode(destinationZipCode)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Código postal inválido. Formato esperado: 2000 o S2000AAA'
+      });
+    }
+
+   
     const subtotal = items.reduce((sum, item) => {
       const price = item.final_price || item.price || 0;
       const quantity = item.quantity || 1;
       return sum + (price * quantity);
     }, 0);
 
-    // Calcular envío
-    const shippingResult = calculateShippingCost(
+    console.log('📦 Calculando envío:', {
+      items: items.length,
+      destinationZipCode,
+      destinationCity,
+      destinationState,
+      subtotal
+    });
+
+    const shippingResult = await zipNovaService.quoteShipping({
       items,
       destinationZipCode,
+      destinationCity,
+      destinationState,
       subtotal
-    );
-
-    // Calcular progreso de envío gratis
-    const freeShippingProgress = calculateFreeShippingProgress(subtotal);
-
-    // Respuesta exitosa
-    return res.status(200).json({
-      success: true,
-      cost: shippingResult.cost,
-      isFree: shippingResult.isFree,
-      service: shippingResult.service,
-      deliveryTime: shippingResult.deliveryTime,
-      options: shippingResult.options, // Todas las opciones disponibles
-      weight: {
-        real: shippingResult.weight.realWeight,
-        volumetric: shippingResult.weight.volumetricWeight,
-        chargeable: shippingResult.weight.chargeableWeight,
-        chargeByVolume: shippingResult.weight.chargeByVolume
-      },
-      zone: shippingResult.zone,
-      origin: shippingResult.origin,
-      destination: shippingResult.destination,
-      estimatedOnly: shippingResult.estimatedOnly,
-      freeShippingProgress: freeShippingProgress
     });
 
-  } catch (error) {
-    console.error("Error calculando envío:", error);
-    
-    // Respuesta de error
-    return res.status(500).json({
-      success: false,
-      error: error.message || "Error al calcular el envío"
-    });
-  }
-};
-
-/**
- * GET /api/shipping/zones
- * Obtiene información sobre las zonas de envío disponibles
- */
-export const getShippingZones = (req, res) => {
-  try {
-    const zones = {
-      zona1: {
-        nombre: "Santa Fe y alrededores",
-        codigosPostales: "2000-2199",
-        descripcion: "Santa Fe capital y Rosario"
-      },
-      zona2: {
-        nombre: "Resto del país",
-        codigosPostales: "Resto",
-        descripcion: "Todo el país excepto Patagonia"
-      },
-      patagonia: {
-        nombre: "Patagonia",
-        codigosPostales: "8000+",
-        descripcion: "Región patagónica"
-      }
+   
+    const freeShippingProgress = {
+      threshold: ZIPNOVA_CONFIG.FREE_SHIPPING_THRESHOLD,
+      current: subtotal,
+      remaining: Math.max(0, ZIPNOVA_CONFIG.FREE_SHIPPING_THRESHOLD - subtotal),
+      percentage: Math.min(100, (subtotal / ZIPNOVA_CONFIG.FREE_SHIPPING_THRESHOLD) * 100),
+      qualifies: subtotal >= ZIPNOVA_CONFIG.FREE_SHIPPING_THRESHOLD
     };
 
+   
     return res.status(200).json({
       success: true,
-      zones: zones
+      ...shippingResult,
+      freeShippingProgress
     });
+
   } catch (error) {
-    console.error("Error obteniendo zonas:", error);
-    return res.status(500).json({
+    console.error('❌ Error calculando envío:', error);
+    
+    // Determinar el código de error apropiado
+    let statusCode = 500;
+    let errorMessage = error.message || 'Error al calcular el envío';
+    
+    if (error.message.includes('autenticación')) {
+      statusCode = 503; // Service Unavailable
+      errorMessage = 'Servicio de envíos temporalmente no disponible';
+    } else if (error.message.includes('Destino no encontrado')) {
+      statusCode = 404;
+    } else if (error.message.includes('inválido')) {
+      statusCode = 422;
+    }
+    
+    return res.status(statusCode).json({
       success: false,
-      error: "Error al obtener zonas de envío"
+      error: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };
 
-/**
- * GET /api/shipping/config
- * Obtiene la configuración de envíos (umbral de envío gratis, etc.)
- */
+
 export const getShippingConfig = (req, res) => {
   try {
     return res.status(200).json({
       success: true,
       config: {
-        freeShippingThreshold: 100000,
-        maxWeight: 30,
+        freeShippingThreshold: ZIPNOVA_CONFIG.FREE_SHIPPING_THRESHOLD,
         origin: {
-          postalCode: "2121",
-          city: "Pérez",
-          province: "Santa Fe"
-        }
+          account_id: ZIPNOVA_CONFIG.ACCOUNT_ID,
+          origin_id: ZIPNOVA_CONFIG.ORIGIN_ID
+        },
+        provider: 'Zipnova'
       }
     });
   } catch (error) {
-    console.error("Error obteniendo configuración:", error);
+    console.error('❌ Error obteniendo configuración:', error);
     return res.status(500).json({
       success: false,
-      error: "Error al obtener configuración de envíos"
+      error: 'Error al obtener configuración de envíos'
+    });
+  }
+};
+
+
+export const validateZipCode = (req, res) => {
+  try {
+    const { zipCode } = req.body;
+
+    if (!zipCode) {
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        error: 'Se requiere el código postal'
+      });
+    }
+
+    const isValid = zipNovaService.validateZipCode(zipCode);
+
+    return res.status(200).json({
+      success: true,
+      valid: isValid,
+      zipCode: zipCode
+    });
+
+  } catch (error) {
+    console.error('❌ Error validando código postal:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Error al validar el código postal'
     });
   }
 };
 
 export default {
   calculateShipping,
-  getShippingZones,
-  getShippingConfig
+  getShippingConfig,
+  validateZipCode
 };

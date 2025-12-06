@@ -1,6 +1,3 @@
-// ShippingOptions.jsx - Componente para seleccionar opciones de envío
-// Coloca este archivo en tu carpeta de components
-
 import { useState } from 'react';
 
 export default function ShippingOptions({ shippingData, onSelectOption }) {
@@ -15,10 +12,10 @@ export default function ShippingOptions({ shippingData, onSelectOption }) {
     onSelectOption(option);
   };
 
-  // Si es envío gratis
+  
   if (shippingData.isFree) {
     return (
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-6">
+      <div className="bg-linear-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-6">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
             <i className="fa-solid fa-gift text-3xl text-white"></i>
@@ -46,7 +43,7 @@ export default function ShippingOptions({ shippingData, onSelectOption }) {
 
   return (
     <div className="space-y-4">
-      {/* Información del peso */}
+      
       {shippingData.weight && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
           <div className="flex items-center justify-between text-sm">
@@ -68,13 +65,13 @@ export default function ShippingOptions({ shippingData, onSelectOption }) {
         </div>
       )}
 
-      {/* Título */}
+      
       <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
         <i className="fa-solid fa-truck text-blue-600"></i>
         Selecciona el método de envío:
       </h3>
 
-      {/* Opciones de envío */}
+      
       <div className="space-y-3">
         {shippingData.options.map((option, index) => (
           <label
@@ -142,7 +139,7 @@ export default function ShippingOptions({ shippingData, onSelectOption }) {
         ))}
       </div>
 
-      {/* Nota de estimación */}
+      
       {shippingData.estimatedOnly && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
           <p className="text-sm text-yellow-800 flex items-start gap-2">

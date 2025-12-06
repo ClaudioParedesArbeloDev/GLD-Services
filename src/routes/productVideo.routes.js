@@ -1,4 +1,5 @@
 import express from "express";
+import { protectAdmin } from "../middleware/auth.js";
 
 import {
   getVideosByProduct,
@@ -17,14 +18,14 @@ const router = express.Router();
 
 router.get("/", getAllVideos);
 router.get("/:id", getVideoById);
-router.post("/", createVideo);
-router.put("/:id", updateVideo);
-router.delete("/:id", deleteVideo);
-
 router.get("/type/:type", getVideosByType);
-
 router.get("/product/:productId", getVideosByProduct);
-router.post("/product/:productId/multiple", createMultipleVideos);
-router.delete("/product/:productId", deleteVideosByProduct);
+
+
+router.post("/", protectAdmin, createVideo);
+router.put("/:id", protectAdmin, updateVideo);
+router.delete("/:id", protectAdmin, deleteVideo);
+router.post("/product/:productId/multiple", protectAdmin, createMultipleVideos);
+router.delete("/product/:productId", protectAdmin, deleteVideosByProduct);
 
 export default router;

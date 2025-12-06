@@ -39,7 +39,7 @@ export default function FeaturedProduct({ product }) {
                 key={i}
                 src={img.image_url}
                 alt={`${product.title} - ${i + 1}`}
-                className={`w-32 h-32 object-cover rounded-xl border-4 flex-shrink-0 ${
+                className={`w-32 h-32 object-cover rounded-xl border-4 shrink-0 ${
                   img.is_primary === 1 ? "border-cyan-500" : "border-gray-300"
                 }`}
               />
@@ -57,7 +57,7 @@ export default function FeaturedProduct({ product }) {
           {product.description || "Producto importado de alta calidad con envío rápido."}
         </p>
 
-        {/* PRECIOS */}
+        
         <div className="mt-6">
           <p className="text-5xl font-bold text-green-600">
             ${parseFloat(product.final_price || product.base_price).toFixed(2)}
@@ -91,8 +91,8 @@ export default function FeaturedProduct({ product }) {
           </span>
         </div>
 
-        {/* BOTÓN (opcional pero pro) */}
-        <button className="mt-8 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-12 py-5 rounded-full font-bold text-2xl shadow-xl hover:shadow-2xl transition">
+        
+        <button className="mt-8 bg-linear-to-r from-cyan-500 to-blue-600 text-white px-12 py-5 rounded-full font-bold text-2xl shadow-xl hover:shadow-2xl transition">
           ¡COMPRAR AHORA! 🚀
         </button>
       </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 
 export default function ProductForm({ product, categories, onSuccess, onCancel }) {
-  // Estado del formulario principal
+  
   const [form, setForm] = useState({
     title: product?.title || "",
     description: product?.description || "",
@@ -21,13 +21,13 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Estados para imágenes
+  
   const [images, setImages] = useState([]);
   const [newImageUrl, setNewImageUrl] = useState("");
   const [newImageAlt, setNewImageAlt] = useState("");
   const [loadingImages, setLoadingImages] = useState(false);
 
-  // Estados para videos
+  
   const [videos, setVideos] = useState([]);
   const [newVideoUrl, setNewVideoUrl] = useState("");
   const [newVideoTitle, setNewVideoTitle] = useState("");
@@ -35,13 +35,13 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
   const [newVideoType, setNewVideoType] = useState("youtube");
   const [loadingVideos, setLoadingVideos] = useState(false);
 
-  // Estados para especificaciones
+  
   const [specifications, setSpecifications] = useState([]);
   const [newSpecKey, setNewSpecKey] = useState("");
   const [newSpecValue, setNewSpecValue] = useState("");
   const [loadingSpecs, setLoadingSpecs] = useState(false);
 
-  // Cargar datos del producto si estamos editando
+  
   useEffect(() => {
     if (product?.id) {
       setProductId(product.id);
@@ -69,11 +69,11 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     setForm({ ...form, [name]: value });
   };
 
-  // ============= PRODUCTO PRINCIPAL =============
+  
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
     
-    // Validación básica
+  
     if (!form.title || !form.price || !form.category_id) {
       alert("Por favor completa los campos requeridos (título, precio y categoría)");
       return;
@@ -83,22 +83,22 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     try {
       let id = productId;
       if (productId) {
-        // Actualizar producto existente
+  
         await api.put(`/products/${id}`, form);
         alert("Producto actualizado exitosamente");
       } else {
-        // Crear nuevo producto
+  
         const res = await api.post("/products", form);
         id = res.data.data.id;
         setProductId(id);
         alert("Producto creado exitosamente. Ahora puedes agregar imágenes, videos y especificaciones.");
       }
       
-      // Si es paso final, cerrar
+  
       if (currentStep === 4 || !id) {
         onSuccess();
       } else {
-        // Avanzar al siguiente paso
+  
         setCurrentStep(2);
       }
     } catch (err) {
@@ -109,7 +109,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     }
   };
 
-  // ============= IMÁGENES =============
+  
   const handleAddImage = async () => {
     if (!newImageUrl.trim()) {
       alert("Por favor ingresa una URL de imagen");
@@ -127,7 +127,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         product_id: productId,
         url: newImageUrl.trim(),
         alt_text: newImageAlt.trim() || null,
-        is_main: images.length === 0, // Primera imagen es principal
+        is_main: images.length === 0, 
       };
 
       const res = await api.post("/products/images", imageData);
@@ -167,7 +167,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     }
   };
 
-  // ============= VIDEOS =============
+  
   const handleAddVideo = async () => {
     if (!newVideoUrl.trim()) {
       alert("Por favor ingresa una URL de video");
@@ -217,7 +217,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     }
   };
 
-  // ============= ESPECIFICACIONES =============
+  
   const handleAddSpecification = async () => {
     if (!newSpecKey.trim() || !newSpecValue.trim()) {
       alert("Por favor completa la clave y el valor de la especificación");
@@ -280,7 +280,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
     }
   };
 
-  // ============= NAVEGACIÓN ENTRE PASOS =============
+  
   const steps = [
     { number: 1, title: "Información Básica", icon: "fa-info-circle" },
     { number: 2, title: "Imágenes", icon: "fa-images" },
@@ -290,9 +290,9 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+  
       <div className="text-center pb-6 border-b border-gray-200">
-        <h3 className="text-3xl font-light text-primary font-[var(--font-two)]">
+        <h3 className="text-3xl font-light text-primary ">
           {product ? "Editar Producto" : "Nuevo Producto"}
         </h3>
         {productId && (
@@ -300,7 +300,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         )}
       </div>
 
-      {/* Indicador de pasos */}
+      
       <div className="flex justify-between items-center mb-8">
         {steps.map((step, idx) => (
           <div key={step.number} className="flex items-center flex-1">
@@ -343,9 +343,9 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         ))}
       </div>
 
-      {/* Contenido según el paso */}
+
       <div className="min-h-[400px]">
-        {/* PASO 1: Información del Producto */}
+
         {currentStep === 1 && (
           <form onSubmit={handleSubmitProduct} className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -547,7 +547,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
           </form>
         )}
 
-        {/* PASO 2: Imágenes */}
+
         {currentStep === 2 && (
           <div className="space-y-6">
             <div className="bg-blue-50 p-4 rounded-xl">
@@ -557,7 +557,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
               </p>
             </div>
 
-            {/* Formulario para agregar imagen */}
+
             <div className="bg-gray-50 p-6 rounded-xl space-y-4">
               <h4 className="font-medium text-main flex items-center gap-2">
                 <i className="fa-solid fa-plus-circle text-primary"></i>
@@ -612,7 +612,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
               </div>
             </div>
 
-            {/* Lista de imágenes */}
+
             <div>
               <h4 className="font-medium text-main mb-4 flex items-center gap-2">
                 <i className="fa-solid fa-images text-primary"></i>
@@ -678,7 +678,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
           </div>
         )}
 
-        {/* PASO 3: Videos */}
+
         {currentStep === 3 && (
           <div className="space-y-6">
             <div className="bg-blue-50 p-4 rounded-xl">
@@ -688,7 +688,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
               </p>
             </div>
 
-            {/* Formulario para agregar video */}
+
             <div className="bg-gray-50 p-6 rounded-xl space-y-4">
               <h4 className="font-medium text-main flex items-center gap-2">
                 <i className="fa-solid fa-plus-circle text-primary"></i>
@@ -772,7 +772,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
               </div>
             </div>
 
-            {/* Lista de videos */}
+
             <div>
               <h4 className="font-medium text-main mb-4 flex items-center gap-2">
                 <i className="fa-solid fa-video text-primary"></i>
@@ -824,7 +824,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
 
                         <button
                           onClick={() => handleDeleteVideo(video.id)}
-                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition flex-shrink-0"
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-medium transition shrink-0"
                         >
                           <i className="fa-solid fa-trash"></i>
                         </button>
@@ -837,7 +837,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
           </div>
         )}
 
-        {/* PASO 4: Especificaciones */}
+
         {currentStep === 4 && (
           <div className="space-y-6">
             <div className="bg-blue-50 p-4 rounded-xl">
@@ -847,7 +847,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
               </p>
             </div>
 
-            {/* Formulario para agregar especificación */}
+
             <div className="bg-gray-50 p-6 rounded-xl space-y-4">
               <h4 className="font-medium text-main flex items-center gap-2">
                 <i className="fa-solid fa-plus-circle text-primary"></i>
@@ -902,7 +902,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
               </button>
             </div>
 
-            {/* Lista de especificaciones */}
+
             <div>
               <h4 className="font-medium text-main mb-4 flex items-center gap-2">
                 <i className="fa-solid fa-list-check text-primary"></i>
@@ -961,7 +961,7 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
         )}
       </div>
 
-      {/* Navegación de pasos */}
+      
       <div className="flex justify-between items-center pt-8 border-t border-gray-200">
         <button
           type="button"

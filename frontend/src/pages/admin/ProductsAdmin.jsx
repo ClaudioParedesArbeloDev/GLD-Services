@@ -75,14 +75,14 @@ export default function ProductsAdmin() {
   return (
     <div className="min-h-screen bg-body py-16">
       <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-4xl font-light text-primary mb-12 text-center font-[var(--font-two)]">
+        <h2 className="text-4xl font-light text-primary mb-12 text-center">
           <i className="fa-solid fa-boxes-stacked mr-3 text-secondary"></i>
           Administrar Productos
         </h2>
 
         {!showForm && (
           <>
-            {/* Barra de búsqueda y filtros */}
+
             <div className="bg-white p-6 rounded-2xl shadow-md mb-8 border border-gray-100">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-2">
