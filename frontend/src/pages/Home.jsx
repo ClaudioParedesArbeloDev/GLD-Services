@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import api from "../services/api";
 import ProductList from "../components/ProductList";
 
+const IMG_PLACEHOLDER_LG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' fill='%236B7280' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='28'%3ESin Imagen%3C/text%3E%3C/svg%3E";
+const IMG_PLACEHOLDER_SM = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Crect width='100%25' height='100%25' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' fill='%236B7280' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12'%3EImg%3C/text%3E%3C/svg%3E";
+
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -271,11 +274,12 @@ export default function Home() {
                       </div>
                     ) : (
                       <img
-                        src={selectedMedia || "/placeholder.jpg"}
+                        src={selectedMedia || IMG_PLACEHOLDER_LG}
                         alt={featuredProduct.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/600x600/E5E7EB/6B7280?text=Sin+Imagen";
+                          e.target.onerror = null;
+                          e.target.src = IMG_PLACEHOLDER_LG;
                         }}
                       />
                     )}
@@ -303,7 +307,8 @@ export default function Home() {
                         alt="Thumbnail"
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.src = "https://via.placeholder.com/96x96/E5E7EB/6B7280?text=Img";
+                          e.target.onerror = null;
+                          e.target.src = IMG_PLACEHOLDER_SM;
                         }}
                       />
                       {img.is_main && (

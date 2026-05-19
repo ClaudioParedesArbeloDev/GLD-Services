@@ -26,6 +26,9 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
   const [newImageUrl, setNewImageUrl] = useState("");
   const [newImageAlt, setNewImageAlt] = useState("");
   const [loadingImages, setLoadingImages] = useState(false);
+  const [imageInputMode, setImageInputMode] = useState("url"); // "url" | "file"
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreview, setFilePreview] = useState(null);
 
   
   const [videos, setVideos] = useState([]);
@@ -110,6 +113,55 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
   };
 
   
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setSelectedFile(file);
+    setFilePreview(URL.createObjectURL(file));
+  };
+
+  const handleUploadFile = async () => {
+    if (!selectedFile) {
+      alert("Por favor selecciona un archivo");
+      return;
+    }
+    if (!productId) {
+      alert("Primero debes crear el producto");
+      return;
+    }
+
+    setLoadingImages(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const uploadRes = await api.post("/upload/image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const uploadedUrl = uploadRes.data.data.url;
+
+      const imageData = {
+        product_id: productId,
+        url: uploadedUrl,
+        alt_text: newImageAlt.trim() || null,
+        is_main: images.length === 0,
+      };
+
+      const res = await api.post("/products/images", imageData);
+      setImages([...images, res.data.data]);
+      setSelectedFile(null);
+      setFilePreview(null);
+      setNewImageAlt("");
+      alert("Imagen subida y agregada exitosamente");
+    } catch (err) {
+      console.error(err);
+      alert("Error subiendo imagen: " + (err.response?.data?.error || err.message));
+    } finally {
+      setLoadingImages(false);
+    }
+  };
+
   const handleAddImage = async () => {
     if (!newImageUrl.trim()) {
       alert("Por favor ingresa una URL de imagen");
@@ -563,52 +615,137 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
                 <i className="fa-solid fa-plus-circle text-primary"></i>
                 Agregar Nueva Imagen
               </h4>
-              
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-main mb-2">
-                    URL de la Imagen <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://ejemplo.com/imagen.jpg"
-                    value={newImageUrl}
-                    onChange={(e) => setNewImageUrl(e.target.value)}
-                    className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:border-primary focus:outline-none transition"
-                  />
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-main mb-2">
-                    Texto Alternativo (opcional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Descripción de la imagen"
-                    value={newImageAlt}
-                    onChange={(e) => setNewImageAlt(e.target.value)}
-                    className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:border-primary focus:outline-none transition"
-                  />
-                </div>
-
+              {/* Pestañas: URL externa / Subir archivo */}
+              <div className="flex gap-2 border-b border-gray-200">
                 <button
                   type="button"
-                  onClick={handleAddImage}
-                  disabled={loadingImages}
-                  className="w-full px-6 py-3 bg-green-300 hover:bg-green-400 text-white rounded-xl font-medium shadow-md transition disabled:opacity-50"
+                  onClick={() => { setImageInputMode("url"); setSelectedFile(null); setFilePreview(null); }}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-lg transition ${
+                    imageInputMode === "url"
+                      ? "bg-white border border-b-white border-gray-200 text-primary -mb-px"
+                      : "text-gray-500 hover:text-primary"
+                  }`}
                 >
-                  {loadingImages ? (
-                    <>
-                      <i className="fa-solid fa-spinner fa-spin mr-2"></i>
-                      Agregando...
-                    </>
-                  ) : (
-                    <>
-                      <i className="fa-solid fa-plus mr-2"></i>
-                      Agregar Imagen
-                    </>
-                  )}
+                  <i className="fa-solid fa-link mr-2"></i>URL externa
                 </button>
+                <button
+                  type="button"
+                  onClick={() => { setImageInputMode("file"); setNewImageUrl(""); }}
+                  className={`px-4 py-2 text-sm font-medium rounded-t-lg transition ${
+                    imageInputMode === "file"
+                      ? "bg-white border border-b-white border-gray-200 text-primary -mb-px"
+                      : "text-gray-500 hover:text-primary"
+                  }`}
+                >
+                  <i className="fa-solid fa-upload mr-2"></i>Subir archivo
+                </button>
+              </div>
+
+              <div className="space-y-3 pt-2">
+                {imageInputMode === "url" ? (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-main mb-2">
+                        URL de la Imagen <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="url"
+                        placeholder="https://ejemplo.com/imagen.jpg"
+                        value={newImageUrl}
+                        onChange={(e) => setNewImageUrl(e.target.value)}
+                        className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:border-primary focus:outline-none transition"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-main mb-2">
+                        Texto Alternativo (opcional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Descripción de la imagen"
+                        value={newImageAlt}
+                        onChange={(e) => setNewImageAlt(e.target.value)}
+                        className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:border-primary focus:outline-none transition"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleAddImage}
+                      disabled={loadingImages}
+                      className="w-full px-6 py-3 bg-green-300 hover:bg-green-400 text-white rounded-xl font-medium shadow-md transition disabled:opacity-50"
+                    >
+                      {loadingImages ? (
+                        <><i className="fa-solid fa-spinner fa-spin mr-2"></i>Agregando...</>
+                      ) : (
+                        <><i className="fa-solid fa-plus mr-2"></i>Agregar Imagen</>
+                      )}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-main mb-2">
+                        Seleccionar imagen <span className="text-red-500">*</span>
+                      </label>
+                      <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary hover:bg-blue-50 transition">
+                        {filePreview ? (
+                          <img
+                            src={filePreview}
+                            alt="preview"
+                            className="h-full w-full object-contain rounded-xl p-1"
+                          />
+                        ) : (
+                          <>
+                            <i className="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-2"></i>
+                            <p className="text-sm text-gray-500">Hacé click o arrastrá una imagen</p>
+                            <p className="text-xs text-gray-400 mt-1">JPG, PNG, WEBP, GIF — máx. 5MB</p>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+                      </label>
+                      {selectedFile && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          <i className="fa-solid fa-file-image mr-1"></i>
+                          {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-main mb-2">
+                        Texto Alternativo (opcional)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Descripción de la imagen"
+                        value={newImageAlt}
+                        onChange={(e) => setNewImageAlt(e.target.value)}
+                        className="w-full border border-gray-300 px-4 py-3 rounded-xl focus:border-primary focus:outline-none transition"
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleUploadFile}
+                      disabled={loadingImages || !selectedFile}
+                      className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-medium shadow-md transition disabled:opacity-50"
+                    >
+                      {loadingImages ? (
+                        <><i className="fa-solid fa-spinner fa-spin mr-2"></i>Subiendo...</>
+                      ) : (
+                        <><i className="fa-solid fa-cloud-arrow-up mr-2"></i>Subir y Agregar</>
+                      )}
+                    </button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -644,7 +781,8 @@ export default function ProductForm({ product, categories, onSuccess, onCancel }
                           alt={img.alt_text || "Imagen del producto"}
                           className="w-full h-full object-cover"
                           onError={(e) => {
-                            e.target.src = "https://via.placeholder.com/300x300?text=Error+al+cargar";
+                            e.target.onerror = null;
+                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect width='100%25' height='100%25' fill='%23F3F4F6'/%3E%3Ctext x='50%25' y='50%25' fill='%239CA3AF' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14'%3EError al cargar%3C/text%3E%3C/svg%3E";
                           }}
                         />
                       </div>

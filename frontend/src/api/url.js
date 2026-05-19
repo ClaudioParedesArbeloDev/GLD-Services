@@ -1,3 +1,3 @@
-const CurrentURL = "http://localhost:8080";
+const CurrentURL = "https://gldservicios.site";
 
 export default CurrentURL;

@@ -1,14 +1,31 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 import LoginButton from "./LoginButton";
 import LogoutButton from "./Logout";
 import CartButton from "./CartButton";
 import Cart from "./Cart"; 
+import { setAccessToken } from "../services/api";
 
 function Navbar() {
-  const { isAuthenticated, isLoading, user } = useAuth0();
-  const isAdmin = user?.email === "claudioparedesarbelo@gmail.com";
+  const { isAuthenticated, isLoading, user, getAccessTokenSilently } = useAuth0();
+  const adminEmails = [
+    "claudioparedesarbelo@gmail.com",
+    "claudioparedes.dev@gmail.com",
+    "marialauperez18@gmail.com",
+     "marialaueq7@gmail.com"
+  ];
+
+  const isAdmin = adminEmails.includes(user?.email);
+
+  // Obtener y guardar el token cada vez que el usuario se autentica
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    getAccessTokenSilently()
+      .then((token) => setAccessToken(token))
+      .catch((err) => console.error("Error obteniendo token:", err));
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   return (
     <>
@@ -26,10 +43,7 @@ function Navbar() {
             </div>
           </Link>
 
-          
           <div className="flex items-center gap-3 sm:gap-5">
-            
-            
             <CartButton />
             
             {isLoading ? (

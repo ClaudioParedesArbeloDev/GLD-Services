@@ -1,5 +1,7 @@
+const IMG_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' fill='%236B7280' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='28'%3ESin Imagen%3C/text%3E%3C/svg%3E";
+
 export default function FeaturedProduct({ product }) {
-  const primaryImg = product.images?.find(i => i.is_primary === 1)?.image_url || product.images?.[0]?.image_url || "/placeholder.jpg";
+  const primaryImg = product.images?.find(i => i.is_primary === 1)?.image_url || product.images?.[0]?.image_url || IMG_PLACEHOLDER;
   const hasVideo = product.videos && product.videos.length > 0;
   const mainVideo = hasVideo ? product.videos[0].video_url : null;
 
@@ -28,6 +30,7 @@ export default function FeaturedProduct({ product }) {
             alt={product.title} 
             className="w-full rounded-2xl object-cover shadow-xl"
             style={{ maxHeight: "500px" }}
+            onError={(e) => { e.target.onerror = null; e.target.src = IMG_PLACEHOLDER; }}
           />
         )}
 
